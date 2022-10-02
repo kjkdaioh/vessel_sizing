@@ -1,62 +1,47 @@
 import unittest
-from vessel_calc import k_value_calculation
-from vessel_calc import vertical_vessel_min_diameter
-from vessel_calc import demister_dimensions
-from vessel_calc import choose_bottom_to_LSAL_for_vertical_sep
 from vessel_calc import calc_bottom_volume_for_vertical_sep
-from vessel_calc import calc_liquid_zone_for_vertical_vessel
+from vessel_calc import calc_nozzle_velocity
+from vessel_calc import calc_allowable_stress
 
 class MyTestCase(unittest.TestCase):
-    def test_k_value_calculation1(self):
-        k_value = k_value_calculation(0.008, 'N', 7.67, 594.7, 19.7)
-        self.assertAlmostEqual(k_value,
-                         0.038, 4, 'Check answer closely: might be acceptable')  # add assertion here
+    def test_bottom_volume_calculation1(self):
+        bot_vol = calc_bottom_volume_for_vertical_sep('E', 1.575, 0.5, 'V')
+        self.assertAlmostEqual(bot_vol, 1.485, 2, 'Check!')
 
-    def test_k_value_calculation2(self):
-        k_value = k_value_calculation(0.008, 'Y', 7.67, 594.7, 19.7)
-        self.assertAlmostEqual(k_value,
-                         0.08, 4, 'Check answer closely: might be acceptable')  # add assertion here
 
-    def test_k_value_calculation3(self):
-        k_value = k_value_calculation(0.001, 'N', 15, 645, 8)
-        self.assertAlmostEqual(k_value,
-                         0.022, 3, 'Check answer closely: might be acceptable')  # add assertion here
+    def test_bottom_volume_calculation2(self):
+        bot_vol = calc_bottom_volume_for_vertical_sep('S', 1.575, 0.5, 'V')
+        self.assertAlmostEqual(bot_vol, 0.367, 2, 'Check!')
 
-    def test_vertical_vessel_min_diameter(self):
-        min_diameter = vertical_vessel_min_diameter(0.038, 594.7, 19.7, 1, 30596)
-        self.assertAlmostEqual(min_diameter, 1.635, 2, 'Check answer closely: might be acceptable')
-
-    def test_demister_dimensions(self):
-        demister_diameter = demister_dimensions(0.12, 691.29, 13.29, 1, 52998)
-        self.assertAlmostEqual(demister_diameter, 1.283, 3, 'Check answer closely: might be acceptable')
-
-    def test_h_0_E(self):
-        h_0 = choose_bottom_to_LSAL_for_vertical_sep('E', 1.575)
-        self.assertAlmostEqual(h_0, 0.5, 3, 'Check answer closely: might be acceptable')
-
-    def test_h_0_S(self):
-        h_0 = choose_bottom_to_LSAL_for_vertical_sep('S', 1.575)
-        self.assertAlmostEqual(h_0, -0.394, 3, 'Check answer closely: might be acceptable')
-
-    def test_bot_volume_for_vert_sep_E(self):
-        bot_vol = calc_bottom_volume_for_vertical_sep('E', 1.575, 0.5)
-        self.assertAlmostEqual(bot_vol, 1.485, 2, 'Check answer closely: might be acceptable')
-
-    def test_bot_volume_for_vert_sep_S(self):
-        bot_vol = calc_bottom_volume_for_vertical_sep('S', 1.575, -0.394)
-        self.assertAlmostEqual(bot_vol, 0.367, 3, 'Check answer closely: might be acceptable')
-
-    def test_calc_liquid_zone_for_vertical_sep_zone_1(self):
-        zone_height = calc_liquid_zone_for_vertical_vessel(120, 1.575, 1, 2650, 691, 'E')
-        self.assertAlmostEqual(zone_height, 0.066, 3, 'Check answer closely: might be acceptable')
-
-    def test_calc_liquid_zone_for_vertical_sep_zone_2(self):
-        zone_height = calc_liquid_zone_for_vertical_vessel(120, 1.575, 2, 2650, 691, 'E')
-        self.assertAlmostEqual(zone_height, 0.066, 3, 'Check answer closely: might be acceptable')
-
-    def test_calc_liquid_zone_for_vertical_sep_zone_3(self):
-        zone_height = calc_liquid_zone_for_vertical_vessel(120, 1.575, 3, 2650, 691, 'E')
-        self.assertAlmostEqual(zone_height, 0.066, 3, 'Check answer closely: might be acceptable')
+    def test_allowable_stress_calc(self):
+        allowable_stress = calc_allowable_stress(154, {'CS': {'-20': '17.1', '300': '17.1', '400': '17.1', '500': '17.1', '600': '16.4', '650': '15.8',
+                           '700': '15.3', '750': '13', '800': '10.8', '850': '8.7', '900': '5.9', '950': '4',
+                           '1000': '2.5', '1050': '0.1'},
+                    'KCS': {'-20': '20', '300': '20', '400': '20', '500': '20', '600': '19.4', '650': '18.8',
+                                  '700': '18.1', '750': '14.8', '800': '12', '850': '9.3', '900': '6.7', '950': '4',
+                                  '1000': '2.5', '1050': '0'},
+                    '0.5Mo': {'-20': '21.4', '300': '21.4', '400': '21.4', '500': '21.4', '600': '21.4', '650': '21.4',
+                              '700': '21.4', '750': '21.4', '800': '21.4', '850': '20', '900': '13.7', '950': '8.2',
+                              '1000': '4.8', '1050': '0'},
+                    '1.25Cr-0.5Mo': {'-20': '21.4', '300': '21.4', '400': '21.4', '500': '21.4', '600': '21.4',
+                                     '650': '21.4', '700': '21.4', '750': '21.4', '800': '21.4', '850': '20.2',
+                                     '900': '13.7', '950': '9.3','1000': '6.3', '1050': '4.2'},
+                    '2.25Cr-1Mo': {'-20': '21.4', '300': '20.9', '400': '20.6', '500': '20.5', '600': '20.4',
+                                   '650': '20.2', '700': '20', '750': '19.7', '800': '19.3', '850': '18.7',
+                                   '900': '15.8', '950': '11.4', '1000': '7.8', '1050': '5.1'},
+                    '5Cr-0.5Mo': {'-20': '21.4', '300': '20.8', '400': '20.6', '500': '20.5', '600': '20.2',
+                                  '650': '19.9', '700': '19.5', '750': '18.9', '800': '18.2', '850': '14.3',
+                                  '900': '10.9', '950': '8','1000': '5.8', '1050': '4.2'},
+                    'SS316': {'-20': '20', '300': '15.6', '400': '14.3', '500': '13.3', '600': '12.6', '650': '12.3',
+                              '700': '12.1', '750': '11.9', '800': '11.8', '850': '11.6', '900': '11.5', '950': '11.4',
+                              '1000': '11.3', '1050': '11.2'},
+                    'SS321': {'-20': '20', '300': '16.5', '400': '15.3', '500': '14.3', '600': '13.5', '650': '13.2',
+                              '700': '13', '750': '12.7', '800': '12.6', '850': '12.4', '900': '12.3', '950': '12.1',
+                              '1000': '12', '1050': '9.6'},
+                    'SS347': {'-20': '20', '300': '17.1', '400': '16', '500': '15', '600': '14.3', '650': '14',
+                              '700': '13.8', '750': '13.7', '800': '13.6', '850': '13.5', '900': '13.4', '950': '13.4',
+                              '1000': '13.4', '1050': '12.1'}}, '1.25Cr-0.5Mo')
+        self.assertAlmostEqual(allowable_stress, 21.4, 3)
 
 if __name__ == '__main__':
     unittest.main()
